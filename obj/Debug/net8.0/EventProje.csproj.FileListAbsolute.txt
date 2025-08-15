@@ -167,3 +167,5 @@ C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\refint\EventProje.dll
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.pdb
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.genruntimeconfig.cache
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\ref\EventProje.dll
+C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.sourcelink.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

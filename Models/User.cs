@@ -13,7 +13,7 @@ namespace EventProje.Models
         public DateTime BirthDate { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        [JsonIgnore] // Sonsuz döngüyü engeller
-        public List<Event> Events { get; set; }
+        [JsonIgnore]
+        public List<Event> Events { get; set; } = new();
     }
 }
