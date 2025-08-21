@@ -1,119 +1,177 @@
 using Microsoft.AspNetCore.Mvc;
-using EventProje.Data;
+using Microsoft.AspNetCore.Authorization;
 using EventProje.Models;
+using EventProje.Services.Interfaces;
+using EventProje.Dtos;
 using EventProje.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Linq;
 
 namespace EventProje.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // Varsayılan: korumalı. İstisnaları [AllowAnonymous] ile açacağız.
     public class UserController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUserService _userService;
         private readonly EncryptionService _encryptionService;
-        private readonly IConfiguration _configuration;
+        private readonly JwtService _jwtService;
 
-        public UserController(IConfiguration configuration, ApplicationDbContext context, EncryptionService encryptionService)
+        private int? GetUserId()
         {
-            _configuration = configuration;
-            _context = context;
+            var claim = User.FindFirst("userId") ?? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            return int.TryParse(claim?.Value, out var id) ? id : (int?)null;
+        }
+
+        public UserController(IUserService userService, EncryptionService encryptionService, JwtService jwtService)
+        {
+            _userService = userService;
             _encryptionService = encryptionService;
+            _jwtService = jwtService;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_context.Users.ToList());
+            var users = await _userService.GetAllAsync();
+
+            var dtos = users.Select(u => new UserDetailDto
+            {
+                UserId = u.UserId,
+                NameSurname = u.NameSurname,
+                Email = u.Email,
+                BirthDate = u.BirthDate,
+                CreatedAt = u.CreatedAt,
+                Events = u.Events?.Select(e => new EventDto
+                {
+                    EventId = e.EventId,
+                    Title = e.Title,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    IsActive = e.IsActive
+                }).ToList()
+            }).ToList();
+
+            return Ok(dtos);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = _context.Users.Find(id);
+            var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
-            return Ok(user);
+
+            var dto = new UserDetailDto
+            {
+                UserId = user.UserId,
+                NameSurname = user.NameSurname,
+                Email = user.Email,
+                BirthDate = user.BirthDate,
+                CreatedAt = user.CreatedAt,
+                Events = user.Events?.Select(e => new EventDto
+                {
+                    EventId = e.EventId,
+                    Title = e.Title,
+                    StartDate = e.StartDate,
+                    EndDate = e.EndDate,
+                    IsActive = e.IsActive
+                }).ToList()
+            };
+
+            return Ok(dto);
         }
 
-        [HttpPost]
-        public IActionResult Create(User user)
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] CreateUserDto dto)
         {
-            var encryptedPassword = _encryptionService.Encrypt(user.Password);
-            user.Password = encryptedPassword;
+            if (await _userService.EmailExistsAsync(dto.Email))
+                return BadRequest("Bu e-posta ile zaten bir kullanıcı var.");
 
-            _context.Users.Add(user);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
+            var user = new User
+            {
+                NameSurname = dto.NameSurname,
+                Email = dto.Email,
+                Password = _encryptionService.Encrypt(dto.Password), // Gereksinime uygun: şifrelenebilir
+                BirthDate = dto.BirthDate,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var created = await _userService.CreateAsync(user);
+
+            var detailDto = new UserDetailDto
+            {
+                UserId = created.UserId,
+                NameSurname = created.NameSurname,
+                Email = created.Email,
+                BirthDate = created.BirthDate,
+                CreatedAt = created.CreatedAt,
+                Events = new List<EventDto>()
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = detailDto.UserId }, detailDto);
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginRequest dto)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-
-            if (user == null)
-                return NotFound("User not found");
+            var user = await _userService.GetByEmailAsync(dto.Email);
+            if (user == null) return Unauthorized("Kullanıcı bulunamadı.");
 
             var decryptedPassword = _encryptionService.Decrypt(user.Password);
+            if (decryptedPassword != dto.Password)
+                return Unauthorized("Şifre yanlış.");
 
-            if (decryptedPassword != request.Password)
-                return BadRequest("Incorrect password");
-
-            var token = GenerateJwtToken(user);
+            var token = _jwtService.GenerateToken(user);
             return Ok(new { token });
         }
 
-        private string GenerateJwtToken(User user)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
         {
-            var jwtKey = _configuration["Jwt:Key"];
-            var jwtIssuer = _configuration["Jwt:Issuer"];
+            // 🔒 sahiplik kontrolü
+            var uid = GetUserId();
+            if (uid is null) return Unauthorized();
+            if (uid.Value != id)
+                return Forbid("Sadece kendi hesabınızı güncelleyebilirsiniz.");
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim("userId", user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: jwtIssuer,
-                audience: null,
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Update(int id, User updatedUser)
-        {
-            var user = _context.Users.Find(id);
+            var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
 
-            user.Email = updatedUser.Email;
-            user.Password = _encryptionService.Encrypt(updatedUser.Password);
-            user.NameSurname = updatedUser.NameSurname;
-            user.BirthDate = updatedUser.BirthDate;
-            _context.SaveChanges();
+            // E-posta çakışma kontrolü
+            if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase) &&
+                await _userService.EmailExistsAsync(dto.Email))
+            {
+                return BadRequest("Bu e-posta başka bir kullanıcı tarafından kullanılıyor.");
+            }
 
+            user.NameSurname = dto.NameSurname;
+            user.Email = dto.Email;
+            user.BirthDate = dto.BirthDate;
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+            {
+                user.Password = _encryptionService.Encrypt(dto.Password);
+            }
+
+            await _userService.UpdateAsync(user);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = _context.Users.Find(id);
+            // 🔒 sahiplik kontrolü
+            var uid = GetUserId();
+            if (uid is null) return Unauthorized();
+            if (uid.Value != id)
+                return Forbid("Sadece kendi hesabınızı silebilirsiniz.");
+
+            var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound();
 
-            _context.Users.Remove(user);
-            _context.SaveChanges();
+            await _userService.DeleteAsync(id);
             return NoContent();
         }
     }
