@@ -1,0 +1,22 @@
+{
+  "name": "eventproje-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "frontend": "npm run dev --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend",
+    "frontend:preview": "npm run preview --prefix frontend",
+    "backend": "set ASPNETCORE_URLS=http://localhost:5138 && dotnet watch --project ./EventProje.csproj",
+    "dev": "concurrently -n backend,frontend -c green,blue \"npm:backend\" \"npm:frontend\"",
+    "build": "npm run frontend:build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "wait-on": "^7.0.1"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19"
+  }
+}

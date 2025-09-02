@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using EventProje.Repositories;
 using EventProje.Repositories.Interfaces;
-using EventProje.Services;
 using EventProje.Services.Interfaces;
 
 

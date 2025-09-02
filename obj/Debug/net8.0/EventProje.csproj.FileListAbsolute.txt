@@ -1,5 +1,11 @@
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\appsettings.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\backend\Properties\launchSettings.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\frontend\package-lock.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\frontend\package.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\frontend\tsconfig.app.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\frontend\tsconfig.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\frontend\tsconfig.node.json
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.exe
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.deps.json
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.runtimeconfig.json
@@ -8,6 +14,7 @@ C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.pdb
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Humanizer.dll
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.Build.Locator.dll
@@ -148,11 +155,10 @@ C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\runtimes\browser\lib\net8.0\S
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.csproj.AssemblyReference.cache
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.AssemblyInfoInputs.cache
-C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.AssemblyInfo.cs
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.csproj.CoreCompileInputs.cache
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.sourcelink.json
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\staticwebassets\msbuild.EventProje.Microsoft.AspNetCore.StaticWebAssets.props
@@ -167,6 +173,5 @@ C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\refint\EventProje.dll
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.pdb
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.genruntimeconfig.cache
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\ref\EventProje.dll
-C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.sourcelink.json
-C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.staticwebassets.runtime.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\package-lock.json
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\package.json

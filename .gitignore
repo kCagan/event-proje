@@ -416,3 +416,18 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+
+/bin/
+/obj/
+
+# --- backend ---
+/backend/bin/
+/backend/obj/
+/backend/wwwroot/uploads/*
+
+# --- frontend ---
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/.env
