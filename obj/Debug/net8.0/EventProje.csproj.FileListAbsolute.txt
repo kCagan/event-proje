@@ -169,3 +169,4 @@ C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.genruntimeconfig.c
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\ref\EventProje.dll
 C:\Users\cagan\Desktop\EventProje\obj\Debug\net8.0\EventProje.sourcelink.json
 C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\cagan\Desktop\EventProje\bin\Debug\net8.0\EventProje.staticwebassets.runtime.json

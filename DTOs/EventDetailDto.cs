@@ -14,5 +14,6 @@ namespace EventProje.Dtos
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public UserDto? CreatedByUser { get; set; }
+        public List<EventDto>? Last5 { get; set; }
     }
 }

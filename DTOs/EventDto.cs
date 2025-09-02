@@ -4,6 +4,7 @@ namespace EventProje.Dtos
     {
         public int EventId { get; set; }
         public string Title { get; set; } = null!;
+        public DateTime CreatedAt { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string ShortDescription { get; set; } = null!;

@@ -19,6 +19,17 @@ var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 if (string.IsNullOrWhiteSpace(jwtKey))
     throw new InvalidOperationException("Jwt:Key is missing in appsettings.json");
     
+var allowed = builder.Configuration
+    .GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend", p =>
+        p.WithOrigins(allowed)
+         .AllowAnyHeader()
+         .AllowAnyMethod());
+});
+    
 // 📦 EF Core için DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -59,6 +70,22 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend", policy =>
+        policy
+            .WithOrigins(
+                "http://localhost:5173", // Vite
+                "http://localhost:3000"  // CRA
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            // Eğer ileride cookie/SignalR vs. kullanacaksan açarsın:
+            //.AllowCredentials()
+    );
+});
+
 var app = builder.Build();
 
 // Geliştirme ortamı için Swagger
@@ -69,6 +96,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ⬇️ wwwroot içinden /uploads dosyalarını servis et
+app.UseStaticFiles(); // wwwroot varsayılanı
+
+// SIRALAMA önemli: CORS'u auth'dan ÖNCE çağır
+app.UseCors("frontend");
 
 // 🔐 Middleware sırası önemli
 app.UseAuthentication();

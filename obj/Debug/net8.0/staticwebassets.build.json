@@ -1,11 +1,39 @@
 {
   "Version": 1,
-  "Hash": "h/LQYk8drChmo1autkiPQ4n0YTiWLoOkjN7H6Hfl1uE=",
+  "Hash": "zd0AjbTfxL1iibn78YYnDkL+UMgX5tPhHpL2ihLmwl0=",
   "Source": "EventProje",
   "BasePath": "_content/EventProje",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "EventProje\\wwwroot",
+      "Source": "EventProje",
+      "ContentRoot": "C:\\Users\\cagan\\Desktop\\EventProje\\wwwroot\\",
+      "BasePath": "_content/EventProje",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\cagan\\Desktop\\EventProje\\wwwroot\\uploads\\58d7fe81e7304d798e9ccb5f235af4bf.png",
+      "SourceId": "EventProje",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\cagan\\Desktop\\EventProje\\wwwroot\\",
+      "BasePath": "_content/EventProje",
+      "RelativePath": "uploads/58d7fe81e7304d798e9ccb5f235af4bf.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\58d7fe81e7304d798e9ccb5f235af4bf.png"
+    }
+  ]
 }
