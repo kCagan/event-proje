@@ -7,6 +7,21 @@ export type UserDto = {
   birthDate?: string;
 };
 
+// ⬇️ YENİ: Event ve detay tipleri
+export type EventDto = {
+  eventId: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+};
+
+export type UserDetailDto = UserDto & {
+  createdAt?: string;
+  events?: EventDto[];
+};
+
+
 export function getUserIdFromToken(): number | null {
   const token = localStorage.getItem("token");
   if (!token) return null;
@@ -24,7 +39,13 @@ export async function getById(id: number) {
   return r.data;
 }
 
+// ⬇️ YENİ: Detay (events dahil)
+export async function getDetailById(id: number) {
+  const r = await api.get<UserDetailDto>(`/user/${id}`);
+  return r.data;
+}
+
 export async function update(id: number, body: Partial<UserDto> & { password?: string }) {
   const r = await api.put(`/user/${id}`, body);
   return r.data;
-}
+} 

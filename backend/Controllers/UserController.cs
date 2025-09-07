@@ -145,16 +145,15 @@
             [HttpPut("{id:int}")]
             public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDto dto)
             {
-                // 🔒 sahiplik kontrolü
+                // sahiplik
                 var uid = GetUserId();
                 if (uid is null) return Unauthorized();
-                if (uid.Value != id)
-                    return Forbid("Sadece kendi hesabınızı güncelleyebilirsiniz.");
+                if (uid.Value != id) return Forbid("Sadece kendi hesabınızı güncelleyebilirsiniz.");
 
                 var user = await _userService.GetByIdAsync(id);
                 if (user == null) return NotFound();
 
-                // E-posta çakışma kontrolü
+                // e-posta çakışma
                 if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase) &&
                     await _userService.EmailExistsAsync(dto.Email))
                 {
@@ -163,11 +162,24 @@
 
                 user.NameSurname = dto.NameSurname;
                 user.Email = dto.Email;
-                user.BirthDate = dto.BirthDate;
 
+                if (dto.BirthDate.HasValue)            // <-- sadece gönderildiyse güncelle
+                    user.BirthDate = dto.BirthDate.Value;
+
+                // Şifre değişimi isteniyorsa (Password gönderildiyse) mevcut şifreyi doğrula
                 if (!string.IsNullOrWhiteSpace(dto.Password))
                 {
-                    
+                    if (string.IsNullOrWhiteSpace(dto.CurrentPassword))
+                        return BadRequest("Mevcut şifreyi giriniz.");
+
+                    var decrypted = _encryptionService.Decrypt(user.Password);
+                    if (!string.Equals(decrypted, dto.CurrentPassword))
+                        return BadRequest("Mevcut şifre yanlış.");
+
+                    // ⬇ : Yeni şifre mevcutla aynı olamaz
+                    if (string.Equals(dto.Password, dto.CurrentPassword))
+                        return BadRequest("Yeni şifreniz mevcut şifrenizle aynı olamaz.");
+
                     if (!IsPasswordValid(dto.Password))
                         return BadRequest("Parola en az 8 karakter olmalı ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.");
 

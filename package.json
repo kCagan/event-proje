@@ -13,10 +13,5 @@
   "devDependencies": {
     "concurrently": "^9.0.0",
     "wait-on": "^7.0.1"
-  },
-  "dependencies": {
-    "@fullcalendar/core": "^6.1.19",
-    "@fullcalendar/daygrid": "^6.1.19",
-    "@fullcalendar/interaction": "^6.1.19"
   }
 }
